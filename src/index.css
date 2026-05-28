@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: hsl(222 47% 7%);
+  color: hsl(210 40% 96%);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overscroll-behavior: none;
+}
+/* Prevent page scroll/zoom while dragging sliders on touch devices */
+.no-touch-scroll { touch-action: none; }
+
+/* Thin scrollbar for control panel */
+.panel-scroll::-webkit-scrollbar { width: 8px; }
+.panel-scroll::-webkit-scrollbar-thumb { background: hsl(217 33% 22%); border-radius: 8px; }
