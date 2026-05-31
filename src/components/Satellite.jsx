@@ -12,10 +12,11 @@ import {
 
 const VEL_SCALE = 0.05; // scene units per km/s
 
-export default function Satellite({ a, e, i, raan, argPerigee, nu, playing, speed, precession, precessionBoost = 1, onPrecess, onNuChange }) {
+export default function Satellite({ a, e, i, raan, argPerigee, nu, playing, speed, precession, precessionBoost = 1, onPrecess, onNuChange, onTime }) {
   const meshRef = useRef();
   const arrowRef = useRef();
   const meanRef = useRef(trueToMean(nu, e)); // current mean anomaly (rad)
+  const simTimeRef = useRef(0); // monotonic elapsed simulated time (s), for Earth-rotation phase
 
   // Keep mean anomaly in sync when paused / when user drags the nu slider or changes e
   useEffect(() => {
@@ -47,6 +48,11 @@ export default function Satellite({ a, e, i, raan, argPerigee, nu, playing, spee
       const newNu = meanToTrue(meanRef.current, e);
       place(newNu);
       if (onNuChange) onNuChange(newNu);
+
+      // Advance the simulated clock so the ground track's Earth rotation
+      // (GMST) accumulates and the track drifts west over successive orbits.
+      simTimeRef.current += delta * speed;
+      if (onTime) onTime(simTimeRef.current);
 
       // J2 precession: drift the orbit plane (RAAN) and ellipse (arg. of
       // periapsis) at the same time-acceleration as the orbital motion.

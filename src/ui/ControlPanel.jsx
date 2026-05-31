@@ -2,6 +2,7 @@ import React from "react";
 import ParamSlider from "./ParamSlider";
 import Presets from "./Presets";
 import Toggle from "./Toggle";
+import ShareLink from "./ShareLink";
 import { GUIDE_COLORS } from "../components/ElementGuides";
 
 function Section({ title, children }) {
@@ -28,7 +29,14 @@ export default function ControlPanel({
   onVizToggle,
   showApsides,
   onToggleApsides,
+  primaryView,
+  showPip,
+  onTogglePip,
+  trackOrbits,
+  onTrackOrbits,
 }) {
+  // Ground track is on screen if it's the main view, or shown as the inset.
+  const groundTrackVisible = primaryView === "ground" || showPip;
   const { a, e, i, raan, argPerigee, nu } = params;
   // Shared props that wire a slider's eye-toggle to its 3D guide.
   const vizProps = (key) => ({
@@ -41,6 +49,7 @@ export default function ControlPanel({
       <div>
         <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">Preset orbit</label>
         <Presets value={presetKey} onSelect={onPreset} />
+        <ShareLink className="mt-2" />
       </div>
 
       <Section title="Shape">
@@ -83,6 +92,17 @@ export default function ControlPanel({
           label="Perigee & apogee markers"
           tip="Show the lowest point (perigee, orange) and highest point (apogee, indigo) of the orbit. Most meaningful for eccentric orbits — on a circular orbit every point is at the same altitude."
         />
+        <Toggle
+          checked={!!showPip}
+          onChange={onTogglePip}
+          label="Picture-in-picture"
+          tip="Shows the other view (3D scene or ground track) as a small inset you can click to swap to fullscreen. Turn off to show only the main view."
+        />
+        {groundTrackVisible && (
+          <ParamSlider label="Trailing orbits" value={trackOrbits} min={1} max={80} step={1}
+            onChange={onTrackOrbits} format={(x) => Math.round(x).toString()}
+            tip="How many past orbits of ground track to draw behind the satellite. More orbits show the westward drift building up over time." />
+        )}
         <Toggle
           checked={!!precession}
           onChange={onTogglePrecession}

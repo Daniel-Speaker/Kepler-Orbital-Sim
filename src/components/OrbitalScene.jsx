@@ -9,7 +9,7 @@ import NodeMarkers from "./NodeMarkers";
 import ApsisMarkers from "./ApsisMarkers";
 import ElementGuides from "./ElementGuides";
 
-export default function OrbitalScene({ params, playing, speed, precession, precessionBoost, onPrecess, onNuChange, ghost, viz, showApsides }) {
+export default function OrbitalScene({ params, playing, speed, precession, precessionBoost, onPrecess, onNuChange, onTime, ghost, viz, showApsides, interactive = true }) {
   const { a, e, i, raan, argPerigee, nu } = params;
   return (
     <Canvas
@@ -35,10 +35,10 @@ export default function OrbitalScene({ params, playing, speed, precession, prece
       <Satellite
         a={a} e={e} i={i} raan={raan} argPerigee={argPerigee} nu={nu}
         playing={playing} speed={speed}
-        precession={precession} precessionBoost={precessionBoost} onPrecess={onPrecess} onNuChange={onNuChange}
+        precession={precession} precessionBoost={precessionBoost} onPrecess={onPrecess} onNuChange={onNuChange} onTime={onTime}
       />
 
-      <OrbitControls enablePan={false} minDistance={1.6} maxDistance={60} makeDefault />
+      <OrbitControls enabled={interactive} enablePan={false} minDistance={1.6} maxDistance={60} makeDefault />
     </Canvas>
   );
 }
